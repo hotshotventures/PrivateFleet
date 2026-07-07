@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#0a0a09;color:#efece6;font-family:'Work Sans',sans-serif}
+  a{color:#c9a24b;text-decoration:none}
+  a:hover{color:#e2c27f}
+  ::selection{background:#c9a24b;color:#0a0a09}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</helmet>
+
+<x-import component-from-global-scope="image-slot" from="./image-slot.js" hint-size="0,0" style="position:absolute;width:0;height:0;overflow:hidden"></x-import>
+
+<div style="position:relative">
+
+  <!-- NAV -->
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px clamp(20px,5vw,44px);background:rgba(10,10,9,.82);backdrop-filter:blur(10px);border-bottom:1px solid rgba(239,236,230,.08)">
+    <div style="font:600 15px 'Work Sans';letter-spacing:.02em">A&L'S GARAGE</div>
+    <div style="{{ navLinksStyle }}">
+      <a href="#fleet" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.75)" style-hover="color:#c9a24b">Fleet</a>
+      <a href="#why" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.75)">Why Us</a>
+      <a href="#how" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.75)">How It Works</a>
+      <a href="#reviews" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.75)">Reviews</a>
+      <a href="#faq" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.75)">FAQ</a>
+      <a href="https://turo.com/us/en/drivers/21579879" style="font:600 12.5px 'Work Sans';background:#c9a24b;color:#0a0a09;padding:10px 20px;border-radius:2px">Book on Turo</a>
+    </div>
+    <button onClick="{{ toggleMenu }}" aria-label="Menu" style="{{ hamburgerStyle }}">{{ menuIcon }}</button>
+  </nav>
+  <sc-if value="{{ mobileMenuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;top:58px;left:0;right:0;z-index:49;background:rgba(10,10,9,.97);backdrop-filter:blur(10px);border-bottom:1px solid rgba(239,236,230,.08);display:flex;flex-direction:column;padding:8px clamp(20px,5vw,44px) 20px;gap:4px">
+      <a href="#fleet" onClick="{{ closeMenu }}" style="font:500 15px 'Work Sans';color:rgba(239,236,230,.85);padding:12px 0;border-bottom:1px solid rgba(239,236,230,.08)">Fleet</a>
+      <a href="#why" onClick="{{ closeMenu }}" style="font:500 15px 'Work Sans';color:rgba(239,236,230,.85);padding:12px 0;border-bottom:1px solid rgba(239,236,230,.08)">Why Us</a>
+      <a href="#how" onClick="{{ closeMenu }}" style="font:500 15px 'Work Sans';color:rgba(239,236,230,.85);padding:12px 0;border-bottom:1px solid rgba(239,236,230,.08)">How It Works</a>
+      <a href="#reviews" onClick="{{ closeMenu }}" style="font:500 15px 'Work Sans';color:rgba(239,236,230,.85);padding:12px 0;border-bottom:1px solid rgba(239,236,230,.08)">Reviews</a>
+      <a href="#faq" onClick="{{ closeMenu }}" style="font:500 15px 'Work Sans';color:rgba(239,236,230,.85);padding:12px 0;border-bottom:1px solid rgba(239,236,230,.08)">FAQ</a>
+      <a href="https://turo.com/us/en/drivers/21579879" onClick="{{ closeMenu }}" style="font:600 13.5px 'Work Sans';background:#c9a24b;color:#0a0a09;padding:14px 20px;border-radius:2px;text-align:center;margin-top:12px">Book on Turo</a>
+    </div>
+  </sc-if>
+
+  <!-- HERO -->
+  <section style="{{ heroSectionStyle }}">
+    <div style="position:absolute;inset:0;transform:{{ heroParallaxTransform }}">
+      <image-slot id="hero-photo" style="width:100%;height:100%;color:#efece6" shape="rect" fit="cover" placeholder="Drop hero photo — Range Rover SV, golden hour, San Diego" src="uploads/driver-side-exterior.jpeg"></image-slot>
+    </div>
+    <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,10,9,.96) 0%,rgba(10,10,9,.55) 46%,rgba(10,10,9,.25) 100%)"></div>
+    <div style="position:relative;padding:0 clamp(20px,6vw,44px) clamp(56px,10vw,90px);max-width:760px">
+      <div style="font:600 11px 'Work Sans';letter-spacing:.24em;color:#c9a24b;margin-bottom:18px;animation:fadeUp .9s ease both;animation-delay:.05s">SAN DIEGO · PRIVATE FLEET</div>
+      <div style="font:500 clamp(36px,9vw,72px)/1.08 'Playfair Display';margin-bottom:20px;animation:fadeUp .9s ease both;animation-delay:.15s">Drive the moment.<br><span style="font-style:italic;color:#c9a24b">Not just the car.</span></div>
+      <div style="font:300 16px/1.65 'Work Sans';color:rgba(239,236,230,.68);max-width:480px;margin-bottom:32px;animation:fadeUp .9s ease both;animation-delay:.28s">Wedding, weekend, or wide open trail, whatever the trip calls for, there's a car for it. Book direct on Turo.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;animation:fadeUp .9s ease both;animation-delay:.4s">
+        <a href="#fleet" style="display:inline-flex;align-items:center;gap:8px;background:#c9a24b;color:#0a0a09;font:600 13.5px 'Work Sans';padding:15px 28px;border-radius:2px">View the Fleet</a>
+        <a href="https://turo.com/us/en/drivers/21579879" style="display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(239,236,230,.35);color:#efece6;font:600 13.5px 'Work Sans';padding:15px 28px;border-radius:2px">Reserve on Turo →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLEET -->
+  <section id="fleet" style="padding:clamp(70px,14vw,130px) clamp(20px,6vw,44px) clamp(70px,12vw,120px);background:#0a0a09">
+    <div style="max-width:1240px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:64px">
+        <div style="font:600 11px 'Work Sans';letter-spacing:.24em;color:#c9a24b;margin-bottom:14px">THREE CARS. THREE MOODS.</div>
+        <div style="font:500 clamp(28px,6vw,42px) 'Playfair Display'">The Fleet</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px">
+
+        <sc-for list="{{ cars }}" as="car" hint-placeholder-count="3">
+          <div data-reveal-key="{{ car.key }}" style="{{ car.revealStyle }};background:#141311;border-radius:6px;overflow:hidden;border:1px solid rgba(239,236,230,.08);display:flex;flex-direction:column">
+            <image-slot id="{{ car.imgId }}" style="width:100%;height:220px;color:#efece6" shape="rect" fit="cover" placeholder="{{ car.placeholder }}" src="{{ car.photoSrc }}"></image-slot>
+            <sc-if value="{{ car.hasThumbs }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:7px;padding:10px 14px;background:#0f0e0c">
+                <sc-for list="{{ car.thumbs }}" as="thumb" hint-placeholder-count="5">
+                  <img src="{{ thumb.src }}" onMouseEnter="{{ thumb.hoverIn }}" onMouseLeave="{{ thumb.hoverOut }}" style="{{ thumb.style }}" />
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="padding:26px 26px 28px;display:flex;flex-direction:column;flex:1">
+              <div style="font:500 22px 'Playfair Display';margin-bottom:6px">{{ car.name }}</div>
+              <div style="font:400 13px 'Work Sans';color:#c9a24b;margin-bottom:18px">{{ car.tagline }}</div>
+              <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:24px;flex:1">
+                <sc-for list="{{ car.features }}" as="feat" hint-placeholder-count="4">
+                  <div style="display:flex;gap:10px;font:300 13px/1.5 'Work Sans';color:rgba(239,236,230,.72)">
+                    <span style="color:#c9a24b;flex:none">—</span><span>{{ feat }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ car.notice }}" hint-placeholder-val="{{ false }}">
+                <div style="font:400 11.5px/1.5 'Work Sans';color:rgba(201,162,75,.85);background:rgba(201,162,75,.1);border:1px solid rgba(201,162,75,.25);border-radius:3px;padding:8px 10px;margin-bottom:14px">{{ car.notice }}</div>
+              </sc-if>
+              <a href="{{ car.href }}" style="font:600 12.5px 'Work Sans';color:#c9a24b;border-top:1px solid rgba(239,236,230,.1);padding-top:16px">{{ car.cta }} →</a>
+            </div>
+          </div>
+        </sc-for>
+
+        <div data-reveal-key="fleet3" style="{{ reveal.fleet3 }};border:1px dashed rgba(239,236,230,.25);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 26px;gap:10px">
+          <div style="font:500 20px 'Playfair Display';color:rgba(239,236,230,.7)">A Fourth Car<br>Is Joining</div>
+          <div style="font:300 13px/1.5 'Work Sans';color:rgba(239,236,230,.45);max-width:220px">We're expanding the fleet — check back soon.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY BOOK -->
+  <section id="why" style="padding:clamp(60px,10vw,110px) clamp(20px,6vw,44px);background:#141311;border-top:1px solid rgba(239,236,230,.06);border-bottom:1px solid rgba(239,236,230,.06)">
+    <div style="max-width:1160px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:56px">
+        <div style="font:500 clamp(26px,6vw,36px) 'Playfair Display'">Why Book With Us</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:36px">
+        <sc-for list="{{ trustBadges }}" as="badge" hint-placeholder-count="4">
+          <div data-reveal-key="{{ badge.key }}" style="{{ badge.revealStyle }};text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
+            <div style="width:14px;height:14px;border-radius:50%;background:#c9a24b"></div>
+            <div style="font:500 15px 'Work Sans'">{{ badge.title }}</div>
+            <div style="font:300 13px/1.55 'Work Sans';color:rgba(239,236,230,.55)">{{ badge.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" style="padding:clamp(60px,10vw,110px) clamp(20px,6vw,44px);background:#0a0a09">
+    <div style="max-width:1160px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:64px">
+        <div style="font:600 11px 'Work Sans';letter-spacing:.24em;color:#c9a24b;margin-bottom:14px">EASY FROM START TO FINISH</div>
+        <div style="font:500 clamp(26px,6vw,36px) 'Playfair Display'">How It Works</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:36px">
+        <sc-for list="{{ steps }}" as="step" hint-placeholder-count="4">
+          <div data-reveal-key="{{ step.key }}" style="{{ step.revealStyle }}">
+            <div style="font:500 44px 'Playfair Display';color:rgba(201,162,75,.35);margin-bottom:10px">{{ step.num }}</div>
+            <div style="font:500 16px 'Work Sans';margin-bottom:8px">{{ step.title }}</div>
+            <div style="font:300 13px/1.6 'Work Sans';color:rgba(239,236,230,.55)">{{ step.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews" style="padding:clamp(60px,10vw,110px) clamp(20px,6vw,44px);background:#141311;border-top:1px solid rgba(239,236,230,.06);border-bottom:1px solid rgba(239,236,230,.06)">
+    <div style="max-width:1160px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:56px">
+        <div style="font:500 clamp(26px,6vw,36px) 'Playfair Display'">What Guests Say</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px">
+        <sc-for list="{{ reviewSlots }}" as="rv" hint-placeholder-count="3">
+          <div data-reveal-key="{{ rv.key }}" style="{{ rv.revealStyle }};border:1px solid rgba(239,236,230,.1);background:#191712;border-radius:6px;padding:28px 24px;display:flex;flex-direction:column;gap:14px">
+            <div style="font:500 26px 'Playfair Display';color:#c9a24b">"</div>
+            <div style="font:300 14px/1.6 'Work Sans';color:rgba(239,236,230,.75)">{{ rv.text }}</div>
+            <div style="font:500 12.5px 'Work Sans';color:#efece6;margin-top:4px">{{ rv.name }} <span style="color:rgba(239,236,230,.4);font-weight:400">— {{ rv.car }}</span></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="padding:clamp(60px,10vw,110px) clamp(20px,6vw,44px);background:#0a0a09">
+    <div style="max-width:820px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:56px">
+        <div style="font:500 clamp(26px,6vw,36px) 'Playfair Display'">Frequently Asked</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:rgba(239,236,230,.08);border-radius:6px;overflow:hidden">
+        <sc-for list="{{ faqs }}" as="faq" hint-placeholder-count="4">
+          <div data-reveal-key="{{ faq.key }}" style="{{ faq.revealStyle }};background:#141311;padding:22px clamp(18px,4vw,28px);cursor:pointer" onClick="{{ faq.toggle }}">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:20px">
+              <div style="font:500 15.5px 'Work Sans'">{{ faq.q }}</div>
+              <div style="font:400 20px 'Work Sans';color:#c9a24b;flex:none">{{ faq.sign }}</div>
+            </div>
+            <sc-if value="{{ faq.open }}">
+              <div style="font:300 14px/1.65 'Work Sans';color:rgba(239,236,230,.6);margin-top:14px;max-width:620px">{{ faq.a }}</div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <section id="contact" style="padding:clamp(50px,9vw,90px) clamp(20px,6vw,44px) clamp(30px,6vw,50px);background:#141311;border-top:1px solid rgba(239,236,230,.08)">
+    <div style="max-width:1160px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center;gap:26px">
+      <div style="font:500 clamp(24px,6vw,30px) 'Playfair Display'">Ready to drive?</div>
+      <a href="https://turo.com/us/en/drivers/21579879" style="display:inline-flex;background:#c9a24b;color:#0a0a09;font:600 14px 'Work Sans';padding:16px 34px;border-radius:2px">Reserve on Turo →</a>
+      <div style="display:flex;gap:28px;margin-top:14px;flex-wrap:wrap;justify-content:center">
+        <a href="#fleet" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.6)">Fleet</a>
+        <a href="#why" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.6)">Why Us</a>
+        <a href="#how" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.6)">How It Works</a>
+        <a href="#reviews" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.6)">Reviews</a>
+        <a href="#faq" style="font:500 12.5px 'Work Sans';color:rgba(239,236,230,.6)">FAQ</a>
+      </div>
+
+      <div style="border-top:1px solid rgba(239,236,230,.08);margin-top:36px;padding-top:32px;max-width:480px;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="font:500 17px 'Playfair Display'">Own a car? Partner With Us.</div>
+        <div style="font:300 12.5px/1.65 'Work Sans';color:rgba(239,236,230,.55);text-align:center;max-width:400px;margin-bottom:18px">Full hands-off co-hosting — we manage guest communication, cleaning coordination, and pickup/drop-off, and help schedule maintenance too. Let's make it easy.</div>
+        <form onSubmit="{{ submitPartner }}" style="display:flex;flex-direction:column;gap:10px;width:100%">
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <input type="text" required="{{ true }}" placeholder="Name" value="{{ partnerName }}" onChange="{{ setPartnerName }}" style="flex:1;min-width:140px;background:transparent;border:1px solid rgba(239,236,230,.2);color:#efece6;font:400 13px 'Work Sans';padding:10px 12px;border-radius:3px;outline:none" />
+            <input type="email" required="{{ true }}" placeholder="Email" value="{{ partnerEmail }}" onChange="{{ setPartnerEmail }}" style="flex:1;min-width:140px;background:transparent;border:1px solid rgba(239,236,230,.2);color:#efece6;font:400 13px 'Work Sans';padding:10px 12px;border-radius:3px;outline:none" />
+          </div>
+          <textarea placeholder="Tell us about your car" rows="3" value="{{ partnerMessage }}" onChange="{{ setPartnerMessage }}" style="background:transparent;border:1px solid rgba(239,236,230,.2);color:#efece6;font:400 13px 'Work Sans';padding:10px 12px;border-radius:3px;outline:none;resize:vertical;font-family:'Work Sans',sans-serif"></textarea>
+          <button type="submit" style="align-self:center;margin-top:4px;background:none;border:1px solid #c9a24b;color:#c9a24b;font:600 12px 'Work Sans';padding:11px 26px;border-radius:2px;cursor:pointer">Send Inquiry</button>
+        </form>
+      </div>
+
+      <div style="font:300 11.5px 'Work Sans';color:rgba(239,236,230,.35);margin-top:24px">© 2026 A&L's Garage — San Diego, CA</div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = {
+    visible: {},
+    heroScrollY: 0,
+    openFaq: 0,
+    runnerHover: null,
+    sprinterHover: null,
+    svHover: null,
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    menuOpen: false,
+    partnerName: '',
+    partnerEmail: '',
+    partnerMessage: ''
+  };
+
+  setPartnerName(e) {
+    this.setState({ partnerName: e.target.value });
+  }
+
+  setPartnerEmail(e) {
+    this.setState({ partnerEmail: e.target.value });
+  }
+
+  setPartnerMessage(e) {
+    this.setState({ partnerMessage: e.target.value });
+  }
+
+  submitPartner(e) {
+    e.preventDefault();
+    const { partnerName, partnerEmail, partnerMessage } = this.state;
+    const subject = encodeURIComponent('Interested in Co-Hosting — ' + partnerName);
+    const body = encodeURIComponent(`Name: ${partnerName}\nEmail: ${partnerEmail}\n\n${partnerMessage}`);
+    window.location.href = `mailto:aj@hotshotventuresllc.com?subject=${subject}&body=${body}`;
+  }
+
+  toggleMenu() {
+    this.setState((s) => ({ menuOpen: !s.menuOpen }));
+  }
+
+  closeMenu() {
+    this.setState({ menuOpen: false });
+  }
+
+  setSvHover(src) {
+    this.setState({ svHover: src });
+  }
+
+  clearSvHover() {
+    this.setState({ svHover: null });
+  }
+
+  setRunnerHover(src) {
+    this.setState({ runnerHover: src });
+  }
+
+  clearRunnerHover() {
+    this.setState({ runnerHover: null });
+  }
+
+  setSprinterHover(src) {
+    this.setState({ sprinterHover: src });
+  }
+
+  clearSprinterHover() {
+    this.setState({ sprinterHover: null });
+  }
+
+  componentDidMount() {
+    this._observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const key = entry.target.getAttribute('data-reveal-key');
+          if (key && !this.state.visible[key]) {
+            this.setState((s) => ({ visible: { ...s.visible, [key]: true } }));
+          }
+          this._observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    this._observeAll();
+
+    this._onScroll = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => {
+        this._raf = null;
+        this.setState({ heroScrollY: window.scrollY });
+      });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+
+    this._onResize = () => {
+      if (this._resizeRaf) return;
+      this._resizeRaf = requestAnimationFrame(() => {
+        this._resizeRaf = null;
+        this.setState({ width: window.innerWidth });
+      });
+    };
+    window.addEventListener('resize', this._onResize);
+  }
+
+  _observeAll() {
+    const els = this.rootEl ? this.rootEl.querySelectorAll('[data-reveal-key]') : document.querySelectorAll('[data-reveal-key]');
+    els.forEach((el) => this._observer.observe(el));
+  }
+
+  componentWillUnmount() {
+    if (this._observer) this._observer.disconnect();
+    if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+  }
+
+  revealStyle(key, delayMs) {
+    const visible = !!this.state.visible[key];
+    if (visible) {
+      return `opacity:1;transform:translateY(0);transition:opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:${delayMs}ms`;
+    }
+    return `opacity:0;transform:translateY(28px)`;
+  }
+
+  toggleFaq(i) {
+    this.setState((s) => ({ openFaq: s.openFaq === i ? -1 : i }));
+  }
+
+  renderVals() {
+    const carsData = [
+      {
+        key: 'fleet0', imgId: 'car-sv-photo',
+        placeholder: 'Drop photo — Range Rover SV',
+        photoSrc: this.state.svHover || 'uploads/hero.jpeg',
+        hasThumbs: true,
+        thumbs: [
+          { src: 'uploads/hero.jpeg' },
+          { src: 'uploads/driver-side-exterior.jpeg' },
+          { src: 'uploads/exterior%20doors%20open.jpeg' },
+          { src: 'uploads/interior.jpeg' },
+          { src: 'uploads/interior%202.jpeg' }
+        ].map((t) => ({
+          ...t,
+          hoverIn: () => this.setSvHover(t.src),
+          hoverOut: () => this.clearSvHover(),
+          style: `width:38px;height:38px;object-fit:cover;border-radius:3px;cursor:pointer;opacity:${this.state.svHover === t.src ? 1 : 0.6};transition:opacity .2s ease;border:1px solid rgba(239,236,230,.15)`
+        })),
+        name: 'The Range Rover SV', tagline: 'Luxury class. Built to turn heads.',
+        features: [
+          'SV — the top of the Range Rover lineup',
+          'Perfect for weddings, red-carpet arrivals & big-occasion weekends',
+          'Premium cabin, effortless presence'
+        ],
+        cta: 'In the shop — message us', href: 'https://turo.com/us/en/drivers/21579879',
+        notice: 'Currently off the road for a safety recall — back in service soon.'
+      },
+      {
+        key: 'fleet1', imgId: 'car-sprinter-photo',
+        placeholder: 'Drop photo — Simple Sprinter',
+        photoSrc: this.state.sprinterHover || 'uploads/Sprinter%20Van%20Beach.avif',
+        hasThumbs: true,
+        thumbs: [
+          { src: 'uploads/Sprinter%20Van%20Beach.avif' },
+          { src: 'uploads/Joshua%20tree%20side.avif' },
+          { src: 'uploads/dinette%20setup.avif' },
+          { src: 'uploads/van%20bed.avif' },
+          { src: 'uploads/inside%20looking%20out.avif' }
+        ].map((t) => ({
+          ...t,
+          hoverIn: () => this.setSprinterHover(t.src),
+          hoverOut: () => this.clearSprinterHover(),
+          style: `width:38px;height:38px;object-fit:cover;border-radius:3px;cursor:pointer;opacity:${this.state.sprinterHover === t.src ? 1 : 0.6};transition:opacity .2s ease;border:1px solid rgba(239,236,230,.15)`
+        })),
+        name: 'The Simple Sprinter', tagline: 'A basic build, thoughtfully done.',
+        features: [
+          'Dinette converts to a bed',
+          'Solar-charged battery + inverter',
+          'Onboard water system',
+          'Shore power hookup — runs the microwave & outlets'
+        ],
+        cta: 'Book the Sprinter on Turo', href: 'https://turo.com/us/en/van-rental/united-states/san-diego-ca/mercedes-benz/sprinter-cargo/2944937'
+      },
+      {
+        key: 'fleet2', imgId: 'car-4runner-photo',
+        placeholder: 'Drop photo — 4Runner TRD',
+        photoSrc: this.state.runnerHover || 'uploads/4Runner%20hero%20shot.avif',
+        hasThumbs: true,
+        thumbs: [
+          { src: 'uploads/4Runner%20hero%20shot.avif' },
+          { src: 'uploads/white%20sand%20side.avif' },
+          { src: 'uploads/3%20peak%20tires.avif' },
+          { src: 'uploads/4Runner%20bike%20rack%20and%20white%20sand.avif' },
+          { src: 'uploads/AT%20tires.avif' }
+        ].map((t) => ({
+          ...t,
+          hoverIn: () => this.setRunnerHover(t.src),
+          hoverOut: () => this.clearRunnerHover(),
+          style: `width:38px;height:38px;object-fit:cover;border-radius:3px;cursor:pointer;opacity:${this.state.runnerHover === t.src ? 1 : 0.6};transition:opacity .2s ease;border:1px solid rgba(239,236,230,.15)`
+        })),
+        name: 'The 4Runner TRD', tagline: 'Off-road ready, trail-tested.',
+        features: [
+          'TRD off-road trim with a 2" lift',
+          'Upgraded wheels for a more aggressive stance',
+          'Handles better on the trails',
+          'Security-tinted windows keep the cab cool & valuables hidden'
+        ],
+        cta: 'Book the 4Runner on Turo', href: 'https://turo.com/us/en/suv-rental/united-states/san-diego-ca/toyota/4runner/2085104'
+      }
+    ];
+    const cars = carsData.map((c, i) => ({ ...c, revealStyle: this.revealStyle(c.key, i * 120) }));
+
+    const trustBadgesData = [
+      { key: 'why0', title: 'All-Star Host', desc: '4.99★ across 121+ reviews, 126 trips and counting.' },
+      { key: 'why1', title: 'Cleaned & Fueled', desc: 'Detailed and topped off before every pickup.' },
+      { key: 'why2', title: 'Flexible Pickup', desc: 'Choose Mira Mesa location or near the airport. Delivery elsewhere is negotiable for a fee.' },
+      { key: 'why3', title: "Turo's Protection Plans", desc: 'Every booking includes insurance coverage.' }
+    ];
+    const trustBadges = trustBadgesData.map((b, i) => ({ ...b, revealStyle: this.revealStyle(b.key, i * 100) }));
+
+    const stepsData = [
+      { key: 'how0', num: '01', title: 'Choose your car', desc: 'Browse the SV, Sprinter, or 4Runner for your trip.' },
+      { key: 'how1', num: '02', title: 'Book instantly on Turo', desc: 'Reserve securely through the Turo app or site.' },
+      { key: 'how2', num: '03', title: 'Meet in San Diego', desc: 'Pick up in Mira Mesa or near the airport — delivery elsewhere is negotiable for a fee.' },
+      { key: 'how3', num: '04', title: 'Hit the road', desc: 'Wedding, trail, or weekend — it\'s yours.' }
+    ];
+    const steps = stepsData.map((s, i) => ({ ...s, revealStyle: this.revealStyle(s.key, i * 100) }));
+
+    const reviewsData = [
+      { name: 'Tiffany', car: 'Simple Sprinter', text: "This van is awesome and so comfortable! Took it to Yosemite, and it fits everything we need with a family of 5. Can't wait to use it again!" },
+      { name: 'John', car: 'Range Rover SV', text: 'Excellent all around – beautiful car, great communication. Easy pickup and drop off. Will rent again!' },
+      { name: 'Sandro', car: '4Runner TRD', text: 'Great car and great hosts. AJ and Lauren are very responsive and were available to answer any questions.' }
+    ];
+    const reviewSlots = reviewsData.map((r, i) => ({ ...r, key: 'reviews' + i, revealStyle: this.revealStyle('reviews' + i, i * 100) }));
+
+    const faqsData = [
+      { q: 'Do I need my own insurance?', a: "No — every booking includes one of Turo's protection plans, so you're covered without a separate policy." },
+      { q: 'Where do I pick up, and can you deliver?', a: "You've got two easy options: Mira Mesa, or near the San Diego Airport. Need drop-off somewhere else? That's negotiable for an additional fee — just message us after booking to work out the details." },
+      { q: "What's included with the Sprinter?", a: 'The dinette-to-bed conversion, a solar-charged battery with inverter, an onboard water system, and a shore power hookup for the microwave and outlets.' },
+      { q: "What's your cancellation policy?", a: "We follow Turo's standard cancellation policy — full details are shown at checkout before you book." }
+    ];
+    const faqs = faqsData.map((f, i) => ({
+      ...f,
+      key: 'faq' + i,
+      revealStyle: this.revealStyle('faq' + i, i * 80),
+      open: this.state.openFaq === i,
+      sign: this.state.openFaq === i ? '−' : '+',
+      toggle: () => this.toggleFaq(i)
+    }));
+
+    const isMobile = this.state.width < 860;
+
+    return {
+      cars,
+      trustBadges,
+      steps,
+      reviewSlots,
+      faqs,
+      reveal: {
+        fleet3: this.revealStyle('fleet3', 360)
+      },
+      heroSectionStyle: isMobile
+        ? 'position:relative;height:78vh;min-height:520px;overflow:hidden;display:flex;align-items:flex-end'
+        : 'position:relative;height:100vh;min-height:640px;overflow:hidden;display:flex;align-items:flex-end',
+      heroParallaxTransform: isMobile
+        ? `translateY(${this.state.heroScrollY * 0.18}px) scale(1)`
+        : `translateY(${this.state.heroScrollY * 0.18}px) scale(1.06)`,
+      navLinksStyle: isMobile ? 'display:none' : 'display:flex;gap:30px;align-items:center',
+      hamburgerStyle: isMobile
+        ? 'display:flex;align-items:center;justify-content:center;width:34px;height:34px;background:none;border:none;color:#efece6;font-size:22px;cursor:pointer;padding:0'
+        : 'display:none',
+      menuIcon: this.state.menuOpen ? '✕' : '☰',
+      toggleMenu: () => this.toggleMenu(),
+      closeMenu: () => this.closeMenu(),
+      mobileMenuOpen: isMobile && this.state.menuOpen,
+      partnerName: this.state.partnerName,
+      partnerEmail: this.state.partnerEmail,
+      partnerMessage: this.state.partnerMessage,
+      setPartnerName: (e) => this.setPartnerName(e),
+      setPartnerEmail: (e) => this.setPartnerEmail(e),
+      setPartnerMessage: (e) => this.setPartnerMessage(e),
+      submitPartner: (e) => this.submitPartner(e)
+    };
+  }
+}
+
+</script>
+</body>
+</html>
