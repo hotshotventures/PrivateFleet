@@ -99,7 +99,7 @@
               </div>
             </sc-if>
             <div style="padding:26px 26px 28px;display:flex;flex-direction:column;flex:1">
-              <div style="font:500 22px 'Playfair Display';margin-bottom:6px">{{ car.name }}</div>
+              <div style="font:500 22px 'Playfair Display';font-variant-numeric:lining-nums;margin-bottom:6px">{{ car.name }}</div>
               <div style="font:400 13px 'Work Sans';color:#c9a24b;margin-bottom:18px">{{ car.tagline }}</div>
               <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:24px;flex:1">
                 <sc-for list="{{ car.features }}" as="feat" hint-placeholder-count="4">
