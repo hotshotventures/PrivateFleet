@@ -120,7 +120,7 @@
               <sc-if value="{{ car.notice }}" hint-placeholder-val="{{ false }}">
                 <div style="font:400 11.5px/1.5 'Work Sans';color:rgba(201,162,75,.85);background:rgba(201,162,75,.1);border:1px solid rgba(201,162,75,.25);border-radius:3px;padding:8px 10px;margin-bottom:14px">{{ car.notice }}</div>
               </sc-if>
-              <a href="{{ car.href }}" style="font:600 12.5px 'Work Sans';color:#c9a24b;border-top:1px solid rgba(239,236,230,.1);padding-top:16px">{{ car.cta }} →</a>
+              <a href="{{ car.href }}" onClick="{{ car.trackClick }}" style="font:600 12.5px 'Work Sans';color:#c9a24b;border-top:1px solid rgba(239,236,230,.1);padding-top:16px">{{ car.cta }} →</a>
             </div>
           </div>
         </sc-for>
@@ -366,8 +366,22 @@ class Component extends DCLogic {
     return `opacity:0;transform:translateY(28px)`;
   }
 
-  toggleFaq(i) {
-    this.setState((s) => ({ openFaq: s.openFaq === i ? -1 : i }));
+  toggleFaq(i, question) {
+    this.setState((s) => {
+      const opening = s.openFaq !== i;
+      if (opening) this.trackEvent('faq_open', { question });
+      return { openFaq: opening ? i : -1 };
+    });
+  }
+
+  trackEvent(name, params) {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', name, { ...params, transport_type: 'beacon' });
+    }
+  }
+
+  trackCtaClick(carName) {
+    this.trackEvent('book_click', { car_name: carName });
   }
 
   renderVals() {
@@ -396,7 +410,8 @@ class Component extends DCLogic {
           'Premium cabin, effortless presence'
         ],
         cta: 'In the shop — message us', href: 'mailto:aj@hotshotventuresllc.com?subject=Range%20Rover%20SV%20Availability',
-        notice: 'Currently off the road for a safety recall — back in service soon.'
+        notice: 'Currently off the road for a safety recall — back in service soon.',
+        trackClick: () => this.trackCtaClick('Range Rover SV')
       },
       {
         key: 'fleet1', imgId: 'car-sprinter-photo',
@@ -422,7 +437,8 @@ class Component extends DCLogic {
           'Onboard water system',
           'Shore power hookup — runs the microwave & outlets'
         ],
-        cta: 'Book the Sprinter on Turo', href: 'https://turo.com/us/en/van-rental/united-states/san-diego-ca/mercedes-benz/sprinter-cargo/2944937'
+        cta: 'Book the Sprinter on Turo', href: 'https://turo.com/us/en/van-rental/united-states/san-diego-ca/mercedes-benz/sprinter-cargo/2944937',
+        trackClick: () => this.trackCtaClick('Simple Sprinter')
       },
       {
         key: 'fleet2', imgId: 'car-4runner-photo',
@@ -448,7 +464,8 @@ class Component extends DCLogic {
           'Handles better on the trails',
           'Security-tinted windows keep the cab cool & valuables hidden'
         ],
-        cta: 'Book the 4Runner on Turo', href: 'https://turo.com/us/en/suv-rental/united-states/san-diego-ca/toyota/4runner/2085104'
+        cta: 'Book the 4Runner on Turo', href: 'https://turo.com/us/en/suv-rental/united-states/san-diego-ca/toyota/4runner/2085104',
+        trackClick: () => this.trackCtaClick('4Runner TRD')
       }
     ];
     const cars = carsData.map((c, i) => ({ ...c, revealStyle: this.revealStyle(c.key, i * 120) }));
@@ -488,7 +505,7 @@ class Component extends DCLogic {
       revealStyle: this.revealStyle('faq' + i, i * 80),
       open: this.state.openFaq === i,
       sign: this.state.openFaq === i ? '−' : '+',
-      toggle: () => this.toggleFaq(i)
+      toggle: () => this.toggleFaq(i, f.q)
     }));
 
     const isMobile = this.state.width < 860;
