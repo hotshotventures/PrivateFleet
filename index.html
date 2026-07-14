@@ -352,9 +352,12 @@ class Component extends DCLogic {
   _initReviewsTicker() {
     const track = document.getElementById('reviews-track');
     if (!track) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const autoScrollEnabled = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let paused = false;
+    let isDragging = false;
+    let startX = 0;
+    let startScrollLeft = 0;
     let resumeTimeout = null;
     const pause = () => { paused = true; };
     const scheduleResume = () => {
@@ -362,33 +365,53 @@ class Component extends DCLogic {
       resumeTimeout = setTimeout(() => { paused = false; }, 900);
     };
 
+    const onPointerDown = (e) => {
+      pause();
+      if (e.pointerType === 'touch') return; // native touch panning handles the drag itself
+      isDragging = true;
+      startX = e.clientX;
+      startScrollLeft = track.scrollLeft;
+      track.setPointerCapture(e.pointerId);
+      track.style.cursor = 'grabbing';
+    };
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      track.scrollLeft = startScrollLeft - (e.clientX - startX);
+    };
+    const onPointerUp = () => {
+      isDragging = false;
+      track.style.cursor = 'grab';
+      scheduleResume();
+    };
+
     track.addEventListener('mouseenter', pause);
-    track.addEventListener('mouseleave', scheduleResume);
-    track.addEventListener('pointerdown', pause);
-    track.addEventListener('pointerup', scheduleResume);
-    track.addEventListener('pointercancel', scheduleResume);
-    track.addEventListener('touchstart', pause, { passive: true });
+    track.addEventListener('mouseleave', () => { if (!isDragging) scheduleResume(); });
+    track.addEventListener('pointerdown', onPointerDown);
+    track.addEventListener('pointermove', onPointerMove);
+    track.addEventListener('pointerup', onPointerUp);
+    track.addEventListener('pointercancel', onPointerUp);
     track.addEventListener('touchend', scheduleResume, { passive: true });
 
-    const step = () => {
-      if (!paused) {
-        const halfWidth = track.scrollWidth / 2;
-        track.scrollLeft += 0.6;
-        if (track.scrollLeft >= halfWidth) track.scrollLeft -= halfWidth;
-      }
+    if (autoScrollEnabled) {
+      const step = () => {
+        if (!paused) {
+          const halfWidth = track.scrollWidth / 2;
+          track.scrollLeft += 0.6;
+          if (track.scrollLeft >= halfWidth) track.scrollLeft -= halfWidth;
+        }
+        this._reviewsRaf = requestAnimationFrame(step);
+      };
       this._reviewsRaf = requestAnimationFrame(step);
-    };
-    this._reviewsRaf = requestAnimationFrame(step);
+    }
 
     this._cleanupReviewsTicker = () => {
-      cancelAnimationFrame(this._reviewsRaf);
+      if (this._reviewsRaf) cancelAnimationFrame(this._reviewsRaf);
       clearTimeout(resumeTimeout);
       track.removeEventListener('mouseenter', pause);
-      track.removeEventListener('mouseleave', scheduleResume);
-      track.removeEventListener('pointerdown', pause);
-      track.removeEventListener('pointerup', scheduleResume);
-      track.removeEventListener('pointercancel', scheduleResume);
-      track.removeEventListener('touchstart', pause);
+      track.removeEventListener('pointerdown', onPointerDown);
+      track.removeEventListener('pointermove', onPointerMove);
+      track.removeEventListener('pointerup', onPointerUp);
+      track.removeEventListener('pointercancel', onPointerUp);
       track.removeEventListener('touchend', scheduleResume);
     };
   }
