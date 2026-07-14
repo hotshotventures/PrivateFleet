@@ -40,10 +40,8 @@
   a:hover{color:#e2c27f}
   ::selection{background:#c9a24b;color:#0a0a09}
   @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes reviewsScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .reviews-track{animation:reviewsScroll 55s linear infinite}
-  .reviews-track:hover{animation-play-state:paused}
-  @media (prefers-reduced-motion: reduce){.reviews-track{animation:none}}
+  #reviews-track{scrollbar-width:none;-ms-overflow-style:none}
+  #reviews-track::-webkit-scrollbar{display:none}
 </style>
 </helmet>
 
@@ -180,16 +178,14 @@
     <div style="max-width:1160px;margin:0 auto clamp(40px,6vw,56px);padding:0 clamp(20px,6vw,44px);text-align:center">
       <div style="font:500 clamp(26px,6vw,36px) 'Playfair Display'">What Guests Say</div>
     </div>
-    <div style="overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)">
-      <div class="reviews-track" style="display:flex;gap:20px;width:max-content">
-        <sc-for list="{{ reviewSlots }}" as="rv" hint-placeholder-count="6">
-          <div style="border:1px solid rgba(239,236,230,.1);background:#191712;border-radius:6px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;width:300px;flex:none">
-            <div style="font:500 26px 'Playfair Display';color:#c9a24b">"</div>
-            <div style="font:300 14px/1.6 'Work Sans';color:rgba(239,236,230,.75)">{{ rv.text }}</div>
-            <div style="font:500 12.5px 'Work Sans';color:#efece6;margin-top:4px">{{ rv.name }} <span style="color:rgba(239,236,230,.4);font-weight:400">— {{ rv.car }}</span></div>
-          </div>
-        </sc-for>
-      </div>
+    <div id="reviews-track" style="display:flex;gap:20px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;cursor:grab;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)">
+      <sc-for list="{{ reviewSlots }}" as="rv" hint-placeholder-count="6">
+        <div style="border:1px solid rgba(239,236,230,.1);background:#191712;border-radius:6px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;width:300px;flex:none">
+          <div style="font:500 26px 'Playfair Display';color:#c9a24b">"</div>
+          <div style="font:300 14px/1.6 'Work Sans';color:rgba(239,236,230,.75)">{{ rv.text }}</div>
+          <div style="font:500 12.5px 'Work Sans';color:#efece6;margin-top:4px">{{ rv.name }} <span style="color:rgba(239,236,230,.4);font-weight:400">— {{ rv.car }}</span></div>
+        </div>
+      </sc-for>
     </div>
   </section>
 
@@ -349,6 +345,52 @@ class Component extends DCLogic {
       });
     };
     window.addEventListener('resize', this._onResize);
+
+    this._initReviewsTicker();
+  }
+
+  _initReviewsTicker() {
+    const track = document.getElementById('reviews-track');
+    if (!track) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let paused = false;
+    let resumeTimeout = null;
+    const pause = () => { paused = true; };
+    const scheduleResume = () => {
+      clearTimeout(resumeTimeout);
+      resumeTimeout = setTimeout(() => { paused = false; }, 900);
+    };
+
+    track.addEventListener('mouseenter', pause);
+    track.addEventListener('mouseleave', scheduleResume);
+    track.addEventListener('pointerdown', pause);
+    track.addEventListener('pointerup', scheduleResume);
+    track.addEventListener('pointercancel', scheduleResume);
+    track.addEventListener('touchstart', pause, { passive: true });
+    track.addEventListener('touchend', scheduleResume, { passive: true });
+
+    const step = () => {
+      if (!paused) {
+        const halfWidth = track.scrollWidth / 2;
+        track.scrollLeft += 0.6;
+        if (track.scrollLeft >= halfWidth) track.scrollLeft -= halfWidth;
+      }
+      this._reviewsRaf = requestAnimationFrame(step);
+    };
+    this._reviewsRaf = requestAnimationFrame(step);
+
+    this._cleanupReviewsTicker = () => {
+      cancelAnimationFrame(this._reviewsRaf);
+      clearTimeout(resumeTimeout);
+      track.removeEventListener('mouseenter', pause);
+      track.removeEventListener('mouseleave', scheduleResume);
+      track.removeEventListener('pointerdown', pause);
+      track.removeEventListener('pointerup', scheduleResume);
+      track.removeEventListener('pointercancel', scheduleResume);
+      track.removeEventListener('touchstart', pause);
+      track.removeEventListener('touchend', scheduleResume);
+    };
   }
 
   _observeAll() {
@@ -360,6 +402,7 @@ class Component extends DCLogic {
     if (this._observer) this._observer.disconnect();
     if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
     if (this._onResize) window.removeEventListener('resize', this._onResize);
+    if (this._cleanupReviewsTicker) this._cleanupReviewsTicker();
   }
 
   revealStyle(key, delayMs) {
