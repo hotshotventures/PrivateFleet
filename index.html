@@ -40,6 +40,10 @@
   a:hover{color:#e2c27f}
   ::selection{background:#c9a24b;color:#0a0a09}
   @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes reviewsScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .reviews-track{animation:reviewsScroll 55s linear infinite}
+  .reviews-track:hover{animation-play-state:paused}
+  @media (prefers-reduced-motion: reduce){.reviews-track{animation:none}}
 </style>
 </helmet>
 
@@ -172,14 +176,14 @@
   </section>
 
   <!-- REVIEWS -->
-  <section id="reviews" style="padding:clamp(60px,10vw,110px) clamp(20px,6vw,44px);background:#141311;border-top:1px solid rgba(239,236,230,.06);border-bottom:1px solid rgba(239,236,230,.06)">
-    <div style="max-width:1160px;margin:0 auto">
-      <div style="text-align:center;margin-bottom:56px">
-        <div style="font:500 clamp(26px,6vw,36px) 'Playfair Display'">What Guests Say</div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px">
-        <sc-for list="{{ reviewSlots }}" as="rv" hint-placeholder-count="3">
-          <div data-reveal-key="{{ rv.key }}" style="{{ rv.revealStyle }};border:1px solid rgba(239,236,230,.1);background:#191712;border-radius:6px;padding:28px 24px;display:flex;flex-direction:column;gap:14px">
+  <section id="reviews" style="padding:clamp(60px,10vw,110px) 0;background:#141311;border-top:1px solid rgba(239,236,230,.06);border-bottom:1px solid rgba(239,236,230,.06)">
+    <div style="max-width:1160px;margin:0 auto clamp(40px,6vw,56px);padding:0 clamp(20px,6vw,44px);text-align:center">
+      <div style="font:500 clamp(26px,6vw,36px) 'Playfair Display'">What Guests Say</div>
+    </div>
+    <div style="overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)">
+      <div class="reviews-track" style="display:flex;gap:20px;width:max-content">
+        <sc-for list="{{ reviewSlots }}" as="rv" hint-placeholder-count="6">
+          <div style="border:1px solid rgba(239,236,230,.1);background:#191712;border-radius:6px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;width:300px;flex:none">
             <div style="font:500 26px 'Playfair Display';color:#c9a24b">"</div>
             <div style="font:300 14px/1.6 'Work Sans';color:rgba(239,236,230,.75)">{{ rv.text }}</div>
             <div style="font:500 12.5px 'Work Sans';color:#efece6;margin-top:4px">{{ rv.name }} <span style="color:rgba(239,236,230,.4);font-weight:400">— {{ rv.car }}</span></div>
@@ -486,11 +490,17 @@ class Component extends DCLogic {
     const steps = stepsData.map((s, i) => ({ ...s, revealStyle: this.revealStyle(s.key, i * 100) }));
 
     const reviewsData = [
-      { name: 'Tiffany', car: 'Simple Sprinter', text: "This van is awesome and so comfortable! Took it to Yosemite, and it fits everything we need with a family of 5. Can't wait to use it again!" },
       { name: 'John', car: 'Range Rover SV', text: 'Excellent all around – beautiful car, great communication. Easy pickup and drop off. Will rent again!' },
-      { name: 'Sandro', car: '4Runner TRD', text: 'Great car and great hosts. AJ and Lauren are very responsive and were available to answer any questions.' }
+      { name: 'Cary', car: 'Range Rover SV', text: 'Car is excellent! And hosts are top notch. Flexible and very responsive.' },
+      { name: 'Edwin', car: 'Range Rover SV', text: 'Very nice people. The vehicle is awesome.' },
+      { name: 'Tiffany', car: 'Simple Sprinter', text: "This van is awesome and so comfortable! Took it to Yosemite, and it fits everything we need with a family of 5. Can't wait to use it again!" },
+      { name: 'Derek', car: 'Simple Sprinter', text: 'The sprinter was great. Easy pick up and drop off. A notebook with clear directions on how to use the van made things super easy. 10 out of 10 would recommend to anyone.' },
+      { name: 'Christina', car: 'Simple Sprinter', text: 'Highly recommend renting this vehicle! The quality of our entire experience was A. The hosts were thoughtful and friendly. This van has the PERFECT amount of space.' },
+      { name: 'Sandro', car: '4Runner TRD', text: 'Great car and great hosts. AJ and Lauren are very responsive and were available to answer any questions.' },
+      { name: 'Adrian', car: '4Runner TRD', text: "AJ and Lauren's truck was absolutely stellar. Communication was personal and informative. The truck was reliable, sound, safe and sturdy." },
+      { name: 'Nicholas', car: '4Runner TRD', text: '4Runner was great for our trip and pickup and drop off was easy.' }
     ];
-    const reviewSlots = reviewsData.map((r, i) => ({ ...r, key: 'reviews' + i, revealStyle: this.revealStyle('reviews' + i, i * 100) }));
+    const reviewSlots = [...reviewsData, ...reviewsData].map((r, i) => ({ ...r, key: 'reviews' + i }));
 
     const faqsData = [
       { q: 'Do I need my own insurance?', a: "No — every booking includes one of Turo's protection plans, so you're covered without a separate policy." },
